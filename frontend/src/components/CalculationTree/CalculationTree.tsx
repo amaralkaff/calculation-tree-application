@@ -3,10 +3,21 @@ import { useCalculationStore } from '../../store/useCalculationStore';
 import { useAuthStore } from '../../store/useAuthStore';
 import { socketService } from '../../services/socket';
 import { CalculationNode } from './CalculationNode';
-import './CalculationTree.css';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog';
 
 export const CalculationTree = () => {
-  const [showStartForm, setShowStartForm] = useState(false);
+  const [showStartDialog, setShowStartDialog] = useState(false);
   const [startNumber, setStartNumber] = useState('');
   const { calculations, loading, error, fetchCalculations, createCalculation, addCalculation, removeCalculation } = useCalculationStore();
   const { isAuthenticated } = useAuthStore();
@@ -42,54 +53,82 @@ export const CalculationTree = () => {
     try {
       await createCalculation({ operand: num });
       setStartNumber('');
-      setShowStartForm(false);
+      setShowStartDialog(false);
     } catch (error) {
       // Error handled by store
     }
   };
 
   if (loading && calculations.length === 0) {
-    return <div className="loading">Loading calculations...</div>;
+    return (
+      <div className="flex items-center justify-center min-h-[60vh]">
+        <div className="text-muted-foreground">Loading calculations...</div>
+      </div>
+    );
   }
 
   return (
-    <div className="calculation-tree-container">
-      <div className="tree-header">
-        <h2>Calculation Trees</h2>
+    <div className="container mx-auto px-4 py-8">
+      <div className="flex items-center justify-between mb-8">
+        <h2 className="text-3xl font-bold">Calculation Trees</h2>
         {isAuthenticated && (
-          <button
-            onClick={() => setShowStartForm(!showStartForm)}
-            className="btn-primary"
-            disabled={loading}
-          >
-            {showStartForm ? 'Cancel' : 'Start New Chain'}
-          </button>
+          <Dialog open={showStartDialog} onOpenChange={setShowStartDialog}>
+            <DialogTrigger asChild>
+              <Button disabled={loading}>Start New Chain</Button>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Start New Calculation Chain</DialogTitle>
+                <DialogDescription>
+                  Enter a starting number to begin a new calculation tree
+                </DialogDescription>
+              </DialogHeader>
+              <form onSubmit={handleStartCalculation}>
+                <div className="space-y-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="startNumber">Starting Number</Label>
+                    <Input
+                      id="startNumber"
+                      type="number"
+                      step="any"
+                      value={startNumber}
+                      onChange={(e) => setStartNumber(e.target.value)}
+                      placeholder="Enter starting number"
+                      required
+                    />
+                  </div>
+                </div>
+                <DialogFooter className="mt-6">
+                  <Button type="button" variant="outline" onClick={() => setShowStartDialog(false)}>
+                    Cancel
+                  </Button>
+                  <Button type="submit" disabled={loading}>
+                    {loading ? 'Starting...' : 'Start'}
+                  </Button>
+                </DialogFooter>
+              </form>
+            </DialogContent>
+          </Dialog>
         )}
       </div>
 
-      {showStartForm && (
-        <form onSubmit={handleStartCalculation} className="start-form">
-          <input
-            type="number"
-            step="any"
-            value={startNumber}
-            onChange={(e) => setStartNumber(e.target.value)}
-            placeholder="Enter starting number"
-            required
-            className="number-input"
-          />
-          <button type="submit" className="btn-primary" disabled={loading}>
-            Start
-          </button>
-        </form>
+      {error && (
+        <div className="mb-6 text-sm text-destructive bg-destructive/10 p-3 rounded-md">
+          {error}
+        </div>
       )}
 
-      {error && <div className="error-message">{error}</div>}
-
-      <div className="calculations-list">
+      <div className="space-y-6">
         {calculations.length === 0 ? (
-          <div className="empty-state">
-            <p>No calculations yet. {isAuthenticated && 'Start a new chain!'}</p>
+          <div className="flex flex-col items-center justify-center min-h-[40vh] text-center">
+            <div className="text-muted-foreground text-lg">
+              No calculations yet.
+              {isAuthenticated && (
+                <div className="mt-2">
+                  Click <span className="font-semibold">"Start New Chain"</span> to begin!
+                </div>
+              )}
+            </div>
           </div>
         ) : (
           calculations.map((calc) => <CalculationNode key={calc.id} node={calc} />)

@@ -8,7 +8,7 @@ import { authenticateToken, optionalAuth } from '../middleware/auth';
 const router = express.Router();
 
 // Get all calculations with tree structure
-router.get('/', optionalAuth, async (req: AuthenticatedRequest, res: Response, next) => {
+router.get('/', optionalAuth, async (_req: AuthenticatedRequest, res: Response, next) => {
   try {
     const calculations = await Calculation.findAll({
       include: [

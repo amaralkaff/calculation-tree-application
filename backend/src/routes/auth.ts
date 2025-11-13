@@ -7,7 +7,6 @@ import { authenticateToken } from '../middleware/auth';
 
 const router = express.Router();
 const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key-change-in-production';
-const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || '7d';
 
 // Register
 router.post('/register', async (req: express.Request, res: Response, next) => {
@@ -29,9 +28,11 @@ router.post('/register', async (req: express.Request, res: Response, next) => {
 
     const user = await User.create({ username, password });
 
-    const token = jwt.sign({ id: user.id, username: user.username }, JWT_SECRET, {
-      expiresIn: JWT_EXPIRES_IN,
-    });
+    const token = jwt.sign(
+      { id: user.id, username: user.username },
+      JWT_SECRET,
+      { expiresIn: 60 * 60 * 24 * 7 } // 7 days in seconds
+    );
 
     res.status(201).json({
       message: 'User registered successfully',
@@ -65,9 +66,11 @@ router.post('/login', async (req: express.Request, res: Response, next) => {
       throw new AppError('Invalid credentials', 401);
     }
 
-    const token = jwt.sign({ id: user.id, username: user.username }, JWT_SECRET, {
-      expiresIn: JWT_EXPIRES_IN,
-    });
+    const token = jwt.sign(
+      { id: user.id, username: user.username },
+      JWT_SECRET,
+      { expiresIn: 60 * 60 * 24 * 7 } // 7 days in seconds
+    );
 
     res.json({
       message: 'Login successful',

@@ -1,6 +1,9 @@
 import { useState, FormEvent } from 'react';
 import { useAuthStore } from '../../store/useAuthStore';
-import './Auth.css';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 
 interface RegisterProps {
   onSwitchToLogin: () => void;
@@ -31,65 +34,78 @@ export const Register = ({ onSwitchToLogin }: RegisterProps) => {
   };
 
   return (
-    <div className="auth-container">
-      <div className="auth-card">
-        <h2>Register</h2>
+    <div className="flex items-center justify-center min-h-[80vh]">
+      <Card className="w-full max-w-md">
+        <CardHeader>
+          <CardTitle>Register</CardTitle>
+          <CardDescription>Create a new account to start calculating</CardDescription>
+        </CardHeader>
         <form onSubmit={handleSubmit}>
-          <div className="form-group">
-            <label htmlFor="username">Username</label>
-            <input
-              id="username"
-              type="text"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              placeholder="Choose a username (min 3 characters)"
-              required
-              minLength={3}
-            />
-          </div>
+          <CardContent className="space-y-6">
+            <div className="space-y-2">
+              <Label htmlFor="username">Username</Label>
+              <Input
+                id="username"
+                type="text"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                placeholder="Choose a username (min 3 characters)"
+                required
+                minLength={3}
+              />
+            </div>
 
-          <div className="form-group">
-            <label htmlFor="password">Password</label>
-            <input
-              id="password"
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="Choose a password (min 6 characters)"
-              required
-              minLength={6}
-            />
-          </div>
+            <div className="space-y-2">
+              <Label htmlFor="password">Password</Label>
+              <Input
+                id="password"
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="Choose a password (min 6 characters)"
+                required
+                minLength={6}
+              />
+            </div>
 
-          <div className="form-group">
-            <label htmlFor="confirmPassword">Confirm Password</label>
-            <input
-              id="confirmPassword"
-              type="password"
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
-              placeholder="Confirm your password"
-              required
-              minLength={6}
-            />
-          </div>
+            <div className="space-y-2">
+              <Label htmlFor="confirmPassword">Confirm Password</Label>
+              <Input
+                id="confirmPassword"
+                type="password"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                placeholder="Confirm your password"
+                required
+                minLength={6}
+              />
+            </div>
 
-          {(error || localError) && (
-            <div className="error-message">{error || localError}</div>
-          )}
+            {(error || localError) && (
+              <div className="text-sm text-destructive bg-destructive/10 p-3 rounded-md">
+                {error || localError}
+              </div>
+            )}
+          </CardContent>
 
-          <button type="submit" className="btn-primary" disabled={loading}>
-            {loading ? 'Creating account...' : 'Register'}
-          </button>
+          <CardFooter className="flex flex-col space-y-4 pt-2">
+            <Button type="submit" className="w-full" disabled={loading}>
+              {loading ? 'Creating account...' : 'Register'}
+            </Button>
+
+            <div className="text-sm text-center text-muted-foreground">
+              Already have an account?{' '}
+              <button
+                type="button"
+                onClick={onSwitchToLogin}
+                className="text-primary underline-offset-4 hover:underline"
+              >
+                Login
+              </button>
+            </div>
+          </CardFooter>
         </form>
-
-        <div className="auth-switch">
-          Already have an account?{' '}
-          <button onClick={onSwitchToLogin} className="link-button">
-            Login
-          </button>
-        </div>
-      </div>
+      </Card>
     </div>
   );
 };

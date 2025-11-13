@@ -23,6 +23,7 @@ services:
       PORT: 3000
       DATABASE_URL: postgresql://calcuser:calcpass@postgres:5432/calctree
       JWT_SECRET: your-secret-key-change-in-production
+      FRONTEND_URL: http://localhost:5173
     ports:
       - "3000:3000"
     volumes:

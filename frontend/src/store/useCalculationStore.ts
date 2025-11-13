@@ -77,11 +77,11 @@ export const useCalculationStore = create<CalculationState>((set, get) => ({
 
   clearError: () => set({ error: null }),
 
-  addCalculation: (calculation: CalculationNode) => {
+  addCalculation: (_calculation: CalculationNode) => {
     get().fetchCalculations();
   },
 
-  removeCalculation: (id: number) => {
+  removeCalculation: (_id: number) => {
     get().fetchCalculations();
   },
 }));

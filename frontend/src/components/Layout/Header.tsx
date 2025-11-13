@@ -1,20 +1,22 @@
 import { useAuthStore } from '../../store/useAuthStore';
-import './Layout.css';
+import { Button } from '@/components/ui/button';
 
 export const Header = () => {
   const { isAuthenticated, user, logout } = useAuthStore();
 
   return (
-    <header className="header">
-      <div className="header-content">
-        <h1 className="logo">Calculation Tree</h1>
+    <header className="border-b">
+      <div className="container mx-auto px-4 py-4 flex items-center justify-between">
+        <h1 className="text-2xl font-bold">Calculation Tree</h1>
 
         {isAuthenticated && user && (
-          <div className="user-section">
-            <span className="user-name">Welcome, {user.username}</span>
-            <button onClick={logout} className="btn-logout">
+          <div className="flex items-center gap-4">
+            <span className="text-sm text-muted-foreground">
+              Welcome, <span className="font-medium text-foreground">{user.username}</span>
+            </span>
+            <Button onClick={logout} variant="outline" size="sm">
               Logout
-            </button>
+            </Button>
           </div>
         )}
       </div>
