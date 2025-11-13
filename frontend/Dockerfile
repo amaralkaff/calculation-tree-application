@@ -50,6 +50,7 @@ PORT=${PORT:-80}
 cat > /etc/nginx/conf.d/default.conf <<EOF
 server {
     listen ${PORT};
+    listen [::]:${PORT};
     server_name _;
     root /usr/share/nginx/html;
     index index.html;
