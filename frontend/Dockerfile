@@ -25,14 +25,9 @@ WORKDIR /app
 # Verify we're now in the correct directory
 RUN cat package.json | grep "calculation-tree-frontend" || (echo "ERROR: Still in wrong directory!" && exit 1)
 
-# Remove any workspace package-lock.json
-RUN rm -f package-lock.json
-
-# Create a minimal package-lock.json to prevent workspace detection
-RUN echo '{"name":"calculation-tree-frontend","lockfileVersion":3,"requires":true,"packages":{}}' > package-lock.json
-
-# Install dependencies (force standalone mode, no workspaces)
-RUN npm install --legacy-peer-deps --no-audit
+# Remove any workspace package-lock.json and reinstall to generate proper lockfile
+RUN rm -f package-lock.json && \
+    npm install --legacy-peer-deps --no-audit
 
 # Build the application (frontend build script: tsc && vite build)
 RUN npm run build
