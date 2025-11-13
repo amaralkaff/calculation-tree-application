@@ -6,17 +6,20 @@ WORKDIR /app
 # Install build dependencies for native modules
 RUN apk add --no-cache python3 make g++
 
-# Copy package file (frontend only)
-COPY package.json ./
+# Copy all source code first (excluding files in .dockerignore)
+COPY . .
 
-# Create a minimal package-lock.json and disable workspaces
+# Remove any workspace package.json/package-lock.json that might have been copied
+RUN rm -f package-lock.json
+
+# Verify we have the correct package.json (should be calculation-tree-frontend)
+RUN cat package.json | grep "calculation-tree-frontend" || (echo "ERROR: Wrong package.json!" && exit 1)
+
+# Create a minimal package-lock.json to prevent workspace detection
 RUN echo '{"name":"calculation-tree-frontend","lockfileVersion":3,"requires":true,"packages":{}}' > package-lock.json
 
 # Install dependencies (force standalone mode, no workspaces)
 RUN npm install --legacy-peer-deps --no-audit
-
-# Copy all source code (excluding files in .dockerignore)
-COPY . .
 
 # Build the application (frontend build script: tsc && vite build)
 RUN npm run build
