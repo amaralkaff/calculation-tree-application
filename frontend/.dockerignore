@@ -6,9 +6,17 @@ dist
 .env.*.local
 .git
 .gitignore
-README.md
 .vscode
 .idea
-*.md
 coverage
 .DS_Store
+
+# Exclude markdown files except README if needed
+*.md
+!README.md
+
+# Exclude any parent workspace files that might be copied
+../package.json
+../package-lock.json
+../node_modules
+../.git

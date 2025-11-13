@@ -13,18 +13,10 @@ COPY package.json ./
 RUN echo '{"name":"calculation-tree-frontend","lockfileVersion":3,"requires":true,"packages":{}}' > package-lock.json
 
 # Install dependencies (force standalone mode, no workspaces)
-RUN npm install --legacy-peer-deps --no-audit --no-workspaces || npm install --legacy-peer-deps --no-audit
+RUN npm install --legacy-peer-deps --no-audit
 
-# Copy source code (excluding workspace files)
-COPY src ./src
-COPY public ./public
-COPY index.html ./
-COPY vite.config.ts ./
-COPY tsconfig.json ./
-COPY tsconfig.node.json ./
-COPY tailwind.config.ts* ./
-COPY postcss.config.js* ./
-COPY *.config.* ./
+# Copy all source code (excluding files in .dockerignore)
+COPY . .
 
 # Build the application (frontend build script: tsc && vite build)
 RUN npm run build
