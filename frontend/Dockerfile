@@ -6,15 +6,25 @@ WORKDIR /app
 # Install build dependencies for native modules
 RUN apk add --no-cache python3 make g++
 
-# Copy package files (frontend only, no workspace)
+# Copy package file (frontend only)
 COPY package.json ./
-COPY package-lock.json* ./
 
-# Install dependencies (standalone, ignore workspaces)
-RUN npm install --legacy-peer-deps --prefer-offline --no-audit
+# Create a minimal package-lock.json and disable workspaces
+RUN echo '{"name":"calculation-tree-frontend","lockfileVersion":3,"requires":true,"packages":{}}' > package-lock.json
 
-# Copy source code
-COPY . .
+# Install dependencies (force standalone mode, no workspaces)
+RUN npm install --legacy-peer-deps --no-audit --no-workspaces || npm install --legacy-peer-deps --no-audit
+
+# Copy source code (excluding workspace files)
+COPY src ./src
+COPY public ./public
+COPY index.html ./
+COPY vite.config.ts ./
+COPY tsconfig.json ./
+COPY tsconfig.node.json ./
+COPY tailwind.config.ts* ./
+COPY postcss.config.js* ./
+COPY *.config.* ./
 
 # Build the application (frontend build script: tsc && vite build)
 RUN npm run build
