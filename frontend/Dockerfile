@@ -25,9 +25,9 @@ WORKDIR /app
 # Verify we're now in the correct directory
 RUN cat package.json | grep "calculation-tree-frontend" || (echo "ERROR: Still in wrong directory!" && exit 1)
 
-# Remove any workspace package-lock.json and reinstall to generate proper lockfile
-RUN rm -f package-lock.json && \
-    npm install --legacy-peer-deps --no-audit
+# Install dependencies with npm install (not ci) to ensure optional dependencies are installed
+# This is needed because npm ci doesn't properly handle optional deps in workspace setups
+RUN npm install --legacy-peer-deps --no-audit
 
 # Build the application (frontend build script: tsc && vite build)
 RUN npm run build
