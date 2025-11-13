@@ -1,0 +1,11 @@
+{
+  "$schema": "https://railway.app/railway.schema.json",
+  "services": {
+    "calculation-tree-frontend": {
+      "build": {
+        "builder": "DOCKERFILE",
+        "dockerfilePath": "./frontend/Dockerfile"
+      }
+    }
+  }
+}
