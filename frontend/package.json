@@ -8,7 +8,8 @@
     "preview": "vite preview",
     "lint": "eslint . --max-warnings 0",
     "test": "vitest",
-    "test:coverage": "vitest run --coverage"
+    "test:coverage": "vitest run --coverage",
+    "postinstall": "npm install @rollup/rollup-linux-x64-gnu || true"
   },
   "dependencies": {
     "@radix-ui/react-dialog": "^1.1.15",
