@@ -29,7 +29,12 @@ RUN cat package.json | grep "calculation-tree-frontend" || (echo "ERROR: Still i
 # This is needed because npm ci doesn't properly handle optional deps in workspace setups
 RUN npm install --legacy-peer-deps --no-audit
 
+# Accept build-time environment variables for Vite
+ARG VITE_API_URL
+ARG VITE_WS_URL
+
 # Build the application (frontend build script: tsc && vite build)
+# Vite will embed these environment variables into the bundle
 RUN npm run build
 
 # Production stage with nginx
