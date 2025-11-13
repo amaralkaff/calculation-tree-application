@@ -1,11 +1,11 @@
 :80 {
-  root * /app/dist
+  root * /dist
 
   # Enable compression
   encode gzip
 
   # Serve files
-  file_server
+  file_server browse
 
   # SPA routing - fall back to index.html for all non-file requests
   try_files {path} /index.html
@@ -18,4 +18,10 @@
   header X-Frame-Options "SAMEORIGIN"
   header X-Content-Type-Options "nosniff"
   header X-XSS-Protection "1; mode=block"
+
+  # Log requests for debugging
+  log {
+    output stdout
+    format json
+  }
 }
