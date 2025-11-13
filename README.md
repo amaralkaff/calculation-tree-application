@@ -32,7 +32,7 @@ This application allows users to:
 ## Getting Started
 
 ### Prerequisites
-- Node.js 18+
+- Node.js 20+
 - Docker & Docker Compose
 - npm or yarn
 

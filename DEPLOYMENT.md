@@ -12,7 +12,7 @@ This guide covers deploying the Calculation Tree application to various platform
 ## Local Development
 
 ### Prerequisites
-- Node.js 18+
+- Node.js 20+
 - PostgreSQL 15+
 - npm or yarn
 
@@ -157,7 +157,7 @@ JWT_EXPIRES_IN=7d
 1. **Install Node.js and PostgreSQL:**
 ```bash
 # Install Node.js
-curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
+curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
 sudo apt-get install -y nodejs
 
 # Install PostgreSQL

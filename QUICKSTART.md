@@ -5,7 +5,7 @@ Get the Calculation Tree application running in 5 minutes!
 ## Prerequisites
 
 - Docker & Docker Compose installed
-- OR Node.js 18+ and PostgreSQL 15+
+- OR Node.js 20+ and PostgreSQL 15+
 
 ## Option 1: Docker Compose (Recommended)
 
