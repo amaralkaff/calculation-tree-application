@@ -86,6 +86,4 @@ SCRIPT
 
 RUN chmod +x /docker-entrypoint.sh
 
-EXPOSE 80
-
 ENTRYPOINT ["/docker-entrypoint.sh"]
