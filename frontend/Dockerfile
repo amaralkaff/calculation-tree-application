@@ -6,16 +6,17 @@ WORKDIR /app
 # Install build dependencies for native modules
 RUN apk add --no-cache python3 make g++
 
-# Copy package files
-COPY package*.json ./
+# Copy package files (frontend only, no workspace)
+COPY package.json ./
+COPY package-lock.json* ./
 
-# Install dependencies
-RUN npm ci --prefer-offline --no-audit
+# Install dependencies (standalone, ignore workspaces)
+RUN npm install --legacy-peer-deps --prefer-offline --no-audit
 
 # Copy source code
 COPY . .
 
-# Build the application
+# Build the application (frontend build script: tsc && vite build)
 RUN npm run build
 
 # Production stage with nginx
