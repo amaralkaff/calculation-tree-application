@@ -6,14 +6,27 @@ WORKDIR /app
 # Install build dependencies for native modules
 RUN apk add --no-cache python3 make g++
 
-# Copy all source code first (excluding files in .dockerignore)
+# Copy all source code first
 COPY . .
 
-# Remove any workspace package.json/package-lock.json that might have been copied
-RUN rm -f package-lock.json
+# Smart detection: Check if we're in root or frontend directory
+# If in root (workspace detected), move to frontend subdirectory
+RUN if [ -f "package.json" ] && grep -q "calculation-tree-app" package.json; then \
+      echo "Detected workspace root, moving to frontend directory..." && \
+      cd frontend && \
+      cp -r . /app-frontend && \
+      cd / && \
+      rm -rf /app && \
+      mv /app-frontend /app; \
+    fi
 
-# Verify we have the correct package.json (should be calculation-tree-frontend)
-RUN cat package.json | grep "calculation-tree-frontend" || (echo "ERROR: Wrong package.json!" && exit 1)
+WORKDIR /app
+
+# Verify we're now in the correct directory
+RUN cat package.json | grep "calculation-tree-frontend" || (echo "ERROR: Still in wrong directory!" && exit 1)
+
+# Remove any workspace package-lock.json
+RUN rm -f package-lock.json
 
 # Create a minimal package-lock.json to prevent workspace detection
 RUN echo '{"name":"calculation-tree-frontend","lockfileVersion":3,"requires":true,"packages":{}}' > package-lock.json
