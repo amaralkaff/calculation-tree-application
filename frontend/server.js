@@ -4,40 +4,47 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const PORT = process.env.PORT || 3000;
-const distPath = path.join(__dirname, 'dist');
+const PORT = process.env.PORT || 80;
+const DIST_DIR = path.join(__dirname, 'dist');
 
 const server = http.createServer((req, res) => {
-  let filePath = path.join(distPath, req.url === '/' ? 'index.html' : req.url);
-
+  let filePath = path.join(DIST_DIR, req.url === '/' ? 'index.html' : req.url);
+  
+  // Security: prevent directory traversal
+  if (!filePath.startsWith(DIST_DIR)) {
+    filePath = path.join(DIST_DIR, 'index.html');
+  }
+  
+  // If file doesn't exist, serve index.html (SPA routing)
+  if (!fs.existsSync(filePath) || fs.statSync(filePath).isDirectory()) {
+    filePath = path.join(DIST_DIR, 'index.html');
+  }
+  
   const ext = path.extname(filePath);
-  const mimeTypes = {
+  const contentTypes = {
     '.html': 'text/html',
-    '.js': 'application/javascript',
     '.css': 'text/css',
+    '.js': 'application/javascript',
     '.json': 'application/json',
     '.png': 'image/png',
     '.jpg': 'image/jpeg',
-    '.gif': 'image/gif',
     '.svg': 'image/svg+xml',
     '.woff': 'font/woff',
     '.woff2': 'font/woff2'
   };
-
+  
   fs.readFile(filePath, (err, data) => {
     if (err) {
-      // Fall back to index.html for SPA routing
-      fs.readFile(path.join(distPath, 'index.html'), (err2, data2) => {
-        res.writeHead(200, { 'Content-Type': 'text/html' });
-        res.end(data2);
-      });
-    } else {
-      res.writeHead(200, { 'Content-Type': mimeTypes[ext] || 'application/octet-stream' });
-      res.end(data);
+      res.writeHead(500);
+      res.end('Error reading file');
+      return;
     }
+    res.writeHead(200, { 'Content-Type': contentTypes[ext] || 'text/plain' });
+    res.end(data);
   });
 });
 
 server.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
+  console.log(`Serving from: ${DIST_DIR}`);
 });

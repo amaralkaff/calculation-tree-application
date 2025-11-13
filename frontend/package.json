@@ -4,7 +4,8 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc && vite build && node copy-dist.mjs",
+    "build": "tsc && vite build",
+    "start": "node server.js",
     "preview": "vite preview",
     "lint": "eslint . --max-warnings 0",
     "test": "vitest",
