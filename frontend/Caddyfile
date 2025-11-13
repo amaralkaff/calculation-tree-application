@@ -1,5 +1,5 @@
 :80 {
-  root * ./dist
+  root * dist
 
   # Enable compression
   encode gzip
