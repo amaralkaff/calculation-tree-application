@@ -1,4 +1,4 @@
-# Multi-stage build for production
+# Multi-stage build for production (Railway deployment)
 FROM node:20-alpine AS builder
 
 WORKDIR /app
